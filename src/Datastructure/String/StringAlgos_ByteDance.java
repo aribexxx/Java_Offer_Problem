@@ -1,14 +1,23 @@
 package Datastructure.String;
 
 import java.util.*;
+/* Practice Questions -Leetcode + ByteDance
+https://leetcode-cn.com/explore/interview/card/bytedance
 
-public class MinimumWindowSubstring {
+String Sections
+*/
 
+public class StringAlgos_ByteDance {
 
-    //Solution 1 :
-//Sliding window + HashMap(needs,windows)用来储存字母出现的次数
+//Q:LONGEST COMMON PREFIX
 
+    //Q1：最小覆盖子串-------------------------------------------------
+    /*输入: S = "ADOBECODEBANC", T = "ABC"
+      输出: "BANC"*/
     public static String minWindow(String s, String t) {
+        //Solution 1 :
+        //Sliding window + 2 HashMaps (needs,windows)用来储存字母出现的次数
+
         Map<Character, Integer> need = new HashMap();
         Map<Character, Integer> window = new HashMap();//record existing matching chars inside window.
         //put all chars into "need" by their appear frequency.
@@ -65,7 +74,7 @@ public class MinimumWindowSubstring {
         return result;
     }
 
-
+    //Q:字符串的排列，s1是否在s2中
     public static boolean checkInclusion(String s1, String s2) {
         if (s1.length() > s2.length()) {
             return false;
@@ -123,7 +132,7 @@ public class MinimumWindowSubstring {
 
     }
 
-
+    //Q3：字符相乘
     public static String multiply(String num1, String num2) {
 
         int l1 = num1.length();
@@ -160,16 +169,9 @@ public class MinimumWindowSubstring {
         return pre_zero.length() == 0 ? "0" : pre_zero;
 
     }
+    //-----------------------------------------------------------
 
-    public static String intArrayToString(int[] arr) {
-        String out = "";
-        for (int i = 0; i < arr.length; i++) {
-            out += Integer.toString(arr[i]);
-
-        }
-        return out;
-    }
-
+    //Q5：反转字符里的单词
     public static String reverseWords(String s) {
         String out = "";
 
@@ -212,19 +214,9 @@ public class MinimumWindowSubstring {
         return unformated;
     }
 
-    public static char[] reverseString(char[] arr, int start, int end) {
-
-        while (start < end) {
-            char temp = arr[start];
-            arr[start] = arr[end];
-            arr[end] = temp;
-            start++;
-            end--;
-        }
-        return arr;
-    }
-
+    //Q6：简化路径
     public static String simplifyPath(String path) {
+
         String out = "";
         if (path.isEmpty()) {
             return out;
@@ -259,7 +251,8 @@ public class MinimumWindowSubstring {
         return out.length() == 1 ? out : out.substring(0, out.length() - 1);
     }
 
-
+    //Q7：复原IP
+    public static List<String> restoreIpAddresses(String s) {
         /*Use recursion (pos+i to keep track of string current position)
       inside a loop(to backtracking 3 nums combination in segment)
 
@@ -267,8 +260,6 @@ public class MinimumWindowSubstring {
                         2) each solution has four strings,so need another list to store this 4 segments.
     */
 
-
-    public static List<String> restoreIpAddresses(String s) {
         List<String> ans = new ArrayList<>();
 
         //Step1: check s is null or not
@@ -278,6 +269,57 @@ public class MinimumWindowSubstring {
         backtracking(s, ans, new ArrayList<>(), 0);
         // Every time need to new a cur_sol to store different solutions.
         return ans;
+    }
+
+    public static String intArrayToString(int[] arr) {
+        String out = "";
+        for (int i = 0; i < arr.length; i++) {
+            out += Integer.toString(arr[i]);
+
+        }
+        return out;
+    }
+
+    //Q：最长公共前缀-----(fly,flower,flow)-----------------------------------------
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) return "";//first need to make sure strs!=null
+        //START PARITITON
+        return partition(strs, 0, strs.length - 1);
+    }
+
+    public static char[] reverseString(char[] arr, int start, int end) {
+
+        while (start < end) {
+            char temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+            start++;
+            end--;
+        }
+        return arr;
+    }
+
+    //Divide section
+    String partition(String[] strs, int left, int right) {
+        int mid = (left + right) / 2;
+        if (left == right) {
+            return strs[left];// 这里有一个坑，注意不能return "",需要return strs[left];
+        }
+        String leftLCP = partition(strs, left, mid);
+        String rightLCP = partition(strs, mid + 1, right);
+        return commonPrefix(leftLCP, rightLCP);
+    }
+
+    //Conquer section
+    String commonPrefix(String left, String right) {
+        int min = Math.min(left.length(), right.length());
+
+        for (int i = 0; i < min; i++) {
+            if (left.charAt(i) != right.charAt(i)) {
+                return left.substring(0, i);
+            }
+        }
+        return left.substring(0, min);
     }
 
     public static void backtracking(String s, List<String> ans, List<String> cur_sol, int pos) {
